@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>고전 문장으로 점치는 오늘 하루</title>
+  <style>
+    :root {
+      --paper: #efe5cf;
+      --paper-deep: #d9c7a1;
+      --ink: #2b241d;
+      --muted: #6f6254;
+      --red: #8a3e2f;
+      --line: rgba(64, 49, 34, .18);
+      --shadow: rgba(43, 36, 29, .18);
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      min-height: 100%;
+    }
+
+    body {
+      min-height: 100vh;
+      color: var(--ink);
+      font-family: "Apple SD Gothic Neo", "Pretendard", "Noto Sans KR", sans-serif;
+      background:
+        radial-gradient(circle at 20% 10%, rgba(255,255,255,.55), transparent 28%),
+        linear-gradient(145deg, #d8c5a0, #bda37d);
+      display: grid;
+      place-items: center;
+      padding: 28px;
+      overflow-x: hidden;
+    }
+
+    .page {
+      width: min(720px, 100%);
+      background:
+        linear-gradient(rgba(255,255,255,.22), rgba(255,255,255,.08)),
+        repeating-linear-gradient(
+          0deg,
+          transparent 0,
+          transparent 31px,
+          rgba(74, 56, 38, .035) 32px
+        ),
+        var(--paper);
+      border: 1px solid rgba(74, 56, 38, .18);
+      border-radius: 8px;
+      box-shadow:
+        0 28px 70px var(--shadow),
+        inset 0 0 80px rgba(105, 77, 42, .08);
+      padding: 46px 42px 36px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .page::before,
+    .page::after {
+      content: "";
+      position: absolute;
+      width: 140px;
+      height: 140px;
+      border: 1px solid rgba(138, 62, 47, .14);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .page::before {
+      left: -70px;
+      top: -70px;
+    }
+
+    .page::after {
+      right: -80px;
+      bottom: -80px;
+    }
+
+    .topline {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .small-title {
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 12px;
+      letter-spacing: .24em;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    .seal {
+      width: 42px;
+      height: 42px;
+      border: 2px solid var(--red);
+      color: var(--red);
+      display: grid;
+      place-items: center;
+      font-family: "Noto Serif KR", Georgia, serif;
+      font-weight: 800;
+      font-size: 13px;
+      line-height: 1.05;
+      transform: rotate(-4deg);
+      background: rgba(255,255,255,.06);
+    }
+
+    h1 {
+      margin: 34px 0 10px;
+      font-family: "Noto Serif KR", Georgia, serif;
+      font-size: clamp(34px, 7vw, 58px);
+      line-height: 1.16;
+      letter-spacing: -.05em;
+      font-weight: 700;
+    }
+
+    .lead {
+      margin: 0;
+      max-width: 530px;
+      font-size: 14px;
+      line-height: 1.8;
+      color: var(--muted);
+    }
+
+    .fortune-card {
+      margin-top: 34px;
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      padding: 34px 0 30px;
+      min-height: 330px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .source {
+      font-size: 12px;
+      letter-spacing: .16em;
+      color: var(--red);
+      margin-bottom: 18px;
+      font-weight: 700;
+    }
+
+    .classic {
+      margin: 0;
+      font-family: "Noto Serif KR", Georgia, serif;
+      font-size: clamp(28px, 5.8vw, 43px);
+      line-height: 1.55;
+      letter-spacing: -.035em;
+      word-break: keep-all;
+    }
+
+    .original {
+      margin-top: 14px;
+      font-family: "Songti SC", "STSong", "Noto Serif CJK SC", serif;
+      font-size: 16px;
+      color: var(--muted);
+      letter-spacing: .08em;
+    }
+
+    .divider {
+      width: 44px;
+      height: 1px;
+      background: var(--red);
+      margin: 26px 0 22px;
+      opacity: .7;
+    }
+
+    .reading-label {
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .18em;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    .reading {
+      margin: 0;
+      font-size: 16px;
+      line-height: 1.85;
+      color: #4e4337;
+      word-break: keep-all;
+    }
+
+    .keywords {
+      margin-top: 18px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .tag {
+      padding: 6px 10px;
+      border: 1px solid rgba(74, 56, 38, .18);
+      border-radius: 999px;
+      font-size: 11px;
+      color: var(--muted);
+      background: rgba(255,255,255,.16);
+    }
+
+    .actions {
+      margin-top: 28px;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    button {
+      appearance: none;
+      border: 0;
+      font: inherit;
+      cursor: pointer;
+    }
+
+    .draw {
+      flex: 1;
+      background: var(--ink);
+      color: #f6eddb;
+      padding: 16px 20px;
+      border-radius: 3px;
+      font-weight: 800;
+      font-size: 15px;
+      letter-spacing: .02em;
+      transition: transform .15s ease, opacity .15s ease;
+    }
+
+    .draw:hover { transform: translateY(-1px); }
+    .draw:active { transform: translateY(1px) scale(.99); }
+
+    .copy {
+      width: 52px;
+      height: 52px;
+      border-radius: 3px;
+      border: 1px solid rgba(74, 56, 38, .22);
+      background: rgba(255,255,255,.18);
+      color: var(--ink);
+      font-size: 17px;
+    }
+
+    .foot {
+      margin-top: 20px;
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      font-size: 11px;
+      color: rgba(78, 67, 55, .62);
+      line-height: 1.6;
+    }
+
+    .fade {
+      animation: reveal .55s ease;
+    }
+
+    @keyframes reveal {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+        filter: blur(3px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+        filter: blur(0);
+      }
+    }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 28px;
+      transform: translateX(-50%) translateY(20px);
+      background: rgba(43,36,29,.92);
+      color: #fff7e8;
+      padding: 10px 14px;
+      border-radius: 3px;
+      font-size: 12px;
+      opacity: 0;
+      pointer-events: none;
+      transition: .25s ease;
+      z-index: 10;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    @media (max-width: 620px) {
+      body { padding: 16px; }
+      .page { padding: 32px 22px 26px; }
+      .fortune-card { min-height: 360px; }
+      .foot { flex-direction: column; gap: 4px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <div class="topline">
+      <div class="small-title">A classic sentence for today</div>
+      <div class="seal">今<br>日</div>
+    </div>
+
+    <h1>고전 문장으로<br>점치는 오늘 하루</h1>
+
+    <p class="lead">
+      오래된 문장 하나를 무작위로 펼칩니다<br>
+      뜻을 너무 어렵게 생각하지 말고, 오늘 필요한 힌트처럼 읽어보세요
+    </p>
+
+    <section class="fortune-card" id="fortuneCard">
+      <div class="source" id="source">《논어》</div>
+      <blockquote class="classic" id="classic">
+        배운 것을 때때로 익히면, 또한 기쁘지 아니한가
+      </blockquote>
+      <div class="original" id="original">學而時習之 不亦說乎</div>
+
+      <div class="divider"></div>
+
+      <div class="reading-label">오늘의 풀이</div>
+      <p class="reading" id="reading">
+        새로 시작하기보다 이미 알고 있는 것을 다시 꺼내볼 날입니다
+        예전에 배운 것, 미뤄둔 것, 잊고 있던 감각이 의외의 답이 될 수 있습니다
+      </p>
+
+      <div class="keywords" id="keywords">
+        <span class="tag">복습</span>
+        <span class="tag">기본</span>
+        <span class="tag">작은 성취</span>
+      </div>
+    </section>
+
+    <div class="actions">
+      <button class="draw" id="drawBtn">오늘의 고전 한 구절 뽑기</button>
+      <button class="copy" id="copyBtn" aria-label="문장 복사">⧉</button>
+    </div>
+
+    <div class="foot">
+      <div>문장은 고전 원문을 바탕으로 현대적으로 풀어 쓴 해석입니다</div>
+      <div id="counter">오늘의 제비 · 001</div>
+    </div>
+  </main>
+
+  <div class="toast" id="toast">오늘의 문장을 복사했습니다</div>
+
+  <script>
+    const fortunes = [
+      {
+        source: "《논어》",
+        classic: "배운 것을 때때로 익히면, 또한 기쁘지 아니한가",
+        original: "學而時習之 不亦說乎",
+        reading: "새로 시작하기보다 이미 알고 있는 것을 다시 꺼내볼 날입니다. 예전에 배운 것, 미뤄둔 것, 잊고 있던 감각이 의외의 답이 될 수 있습니다.",
+        keywords: ["복습", "기본", "작은 성취"]
+      },
+      {
+        source: "《논어》",
+        classic: "아는 것을 안다고 하고, 모르는 것을 모른다고 하는 것이 앎이다",
+        original: "知之爲知之 不知爲不知 是知也",
+        reading: "오늘은 애매하게 넘어가기보다 모르는 것을 정확히 인정할수록 일이 쉬워집니다. 질문 하나를 제대로 하는 것이 억지로 아는 척하는 것보다 훨씬 유리합니다.",
+        keywords: ["정직", "질문", "판단"]
+      },
+      {
+        source: "《논어》",
+        classic: "세 사람이 함께 가면 반드시 나의 스승이 있다",
+        original: "三人行 必有我師焉",
+        reading: "오늘 만나는 사람 중 한 명에게서 예상하지 못한 힌트를 얻을 수 있습니다. 상대의 장점을 하나만 찾아보면 당신에게 필요한 답이 보일 가능성이 큽니다.",
+        keywords: ["관찰", "배움", "인연"]
+      },
+      {
+        source: "《논어》",
+        classic: "서두르면 이루지 못하고, 작은 이익을 보면 큰일을 이루지 못한다",
+        original: "欲速則不達 見小利則大事不成",
+        reading: "오늘은 빠르게 끝내는 것보다 제대로 끝내는 편이 좋습니다. 당장의 편함이나 작은 이득 때문에 중요한 기준을 낮추지 않는 것이 운을 지키는 방법입니다.",
+        keywords: ["속도조절", "기준", "장기전"]
+      },
+      {
+        source: "《도덕경》",
+        classic: "만족할 줄 알면 욕되지 않고, 그칠 줄 알면 위태롭지 않다",
+        original: "知足不辱 知止不殆",
+        reading: "오늘은 더 얻는 것보다 어디서 멈출지를 정하는 감각이 중요합니다. 이미 충분한 일에 에너지를 더 쓰지 않으면 다른 좋은 흐름이 들어올 자리가 생깁니다.",
+        keywords: ["절제", "정리", "여유"]
+      },
+      {
+        source: "《도덕경》",
+        classic: "천 리 길도 발아래에서 시작된다",
+        original: "千里之行 始於足下",
+        reading: "큰 계획이 부담스럽다면 오늘은 첫 동작만 하면 됩니다. 파일 하나 만들기, 한 줄 쓰기, 10분 시작하기 같은 사소한 행동이 흐름을 바꿉니다.",
+        keywords: ["시작", "실행", "첫걸음"]
+      },
+      {
+        source: "《도덕경》",
+        classic: "굽은 것은 온전해지고, 낮은 것은 채워진다",
+        original: "曲則全 窪則盈",
+        reading: "오늘은 완벽하게 버티기보다 유연하게 방향을 바꾸는 편이 유리합니다. 양보나 수정이 패배가 아니라 오히려 전체를 지키는 선택이 될 수 있습니다.",
+        keywords: ["유연함", "전환", "균형"]
+      },
+      {
+        source: "《도덕경》",
+        classic: "큰 그릇은 늦게 이루어진다",
+        original: "大器晩成",
+        reading: "결과가 늦게 보인다고 실패한 것은 아닙니다. 오늘은 속도를 비교하기보다 내가 쌓고 있는 것의 깊이를 확인하는 날로 삼는 편이 좋습니다.",
+        keywords: ["축적", "인내", "성장"]
+      },
+      {
+        source: "《맹자》",
+        classic: "길은 가까운 데 있는데 사람들은 먼 곳에서 찾는다",
+        original: "道在邇而求諸遠",
+        reading: "복잡한 해결책을 찾기 전에 가장 가까운 답부터 확인해보세요. 이미 가진 자료, 익숙한 사람, 현재 할 수 있는 행동 안에 답이 숨어 있을 가능성이 큽니다.",
+        keywords: ["단순함", "주변", "해결"]
+      },
+      {
+        source: "《맹자》",
+        classic: "하늘이 큰일을 맡기려는 사람에게는 먼저 마음과 뜻을 흔든다",
+        original: "天將降大任於是人也 必先苦其心志",
+        reading: "오늘의 불편함이 꼭 나쁜 징조는 아닙니다. 생각보다 까다로운 일이 생기더라도 그것을 통과하며 새로운 기준이 생기는 날일 수 있습니다.",
+        keywords: ["시험", "성장통", "버팀"]
+      },
+      {
+        source: "《장자》",
+        classic: "쓸모없음의 쓸모를 아는 이가 드물다",
+        original: "人皆知有用之用 而莫知無用之用也",
+        reading: "당장 성과로 이어지지 않는 시간도 필요합니다. 오늘은 취미, 산책, 멍때리기처럼 쓸모없어 보이는 일이 오히려 생각을 정리해줄 수 있습니다.",
+        keywords: ["쉼", "여백", "발상"]
+      },
+      {
+        source: "《장자》",
+        classic: "우물 안 개구리에게 바다를 말할 수는 없다",
+        original: "井蛙不可以語於海",
+        reading: "오늘은 너무 익숙한 기준 하나를 의심해볼 필요가 있습니다. 내가 알고 있는 세계가 전부가 아니라는 생각이 새로운 선택지를 열어줄 수 있습니다.",
+        keywords: ["시야", "확장", "새관점"]
+      },
+      {
+        source: "《주역》",
+        classic: "하늘의 움직임은 굳세니, 군자는 스스로 힘써 쉬지 않는다",
+        original: "天行健 君子以自强不息",
+        reading: "오늘은 아주 강한 추진력이 필요한 날입니다. 단, 한 번에 몰아치기보다 멈추지 않는 리듬을 만드는 것이 더 중요합니다.",
+        keywords: ["꾸준함", "의지", "리듬"]
+      },
+      {
+        source: "《주역》",
+        classic: "궁하면 변하고, 변하면 통하며, 통하면 오래간다",
+        original: "窮則變 變則通 通則久",
+        reading: "막힌 일이 있다면 오늘은 버티는 것보다 방식을 바꿔볼 때입니다. 순서, 도구, 접근법 중 하나만 바꿔도 흐름이 다시 열릴 수 있습니다.",
+        keywords: ["변화", "돌파", "전환"]
+      },
+      {
+        source: "《손자병법》",
+        classic: "나를 알고 상대를 알면 백 번 싸워도 위태롭지 않다",
+        original: "知彼知己 百戰不殆",
+        reading: "오늘의 핵심은 준비입니다. 감으로 움직이기보다 내 상태와 상대의 조건을 한 번씩 확인하면 불필요한 실수를 크게 줄일 수 있습니다.",
+        keywords: ["정보", "준비", "전략"]
+      },
+      {
+        source: "《채근담》",
+        classic: "바람이 성긴 대숲을 지나가도, 바람이 지나간 뒤 소리를 남기지 않는다",
+        original: "風來疏竹 風過而竹不留聲",
+        reading: "이미 지나간 일에 오늘의 기분까지 맡기지 않는 편이 좋습니다. 지나간 일은 지나가게 두고, 지금 앞에 있는 것에만 반응해보세요.",
+        keywords: ["놓아주기", "현재", "정리"]
+      },
+      {
+        source: "《채근담》",
+        classic: "물은 급할수록 소리가 나고, 사람은 깊을수록 말이 적다",
+        original: "水深則流緩 人貴則語遲",
+        reading: "오늘은 바로 반응하지 않는 것이 힘이 될 수 있습니다. 답장이나 결정 전에 한 번 더 생각하면 불필요한 말과 후회를 줄일 수 있습니다.",
+        keywords: ["침착", "말", "신중"]
+      },
+      {
+        source: "《명심보감》",
+        classic: "작은 선이라도 하지 않음을 경계하고, 작은 악이라도 행하지 말라",
+        original: "勿以善小而不爲 勿以惡小而爲之",
+        reading: "오늘은 아주 작은 선택의 누적이 중요합니다. 사소한 정리, 작은 배려, 미루지 않은 한 가지 행동이 하루 전체의 분위기를 바꿀 수 있습니다.",
+        keywords: ["작은선택", "습관", "누적"]
+      }
+    ];
+
+    const sourceEl = document.getElementById("source");
+    const classicEl = document.getElementById("classic");
+    const originalEl = document.getElementById("original");
+    const readingEl = document.getElementById("reading");
+    const keywordsEl = document.getElementById("keywords");
+    const cardEl = document.getElementById("fortuneCard");
+    const counterEl = document.getElementById("counter");
+    const toast = document.getElementById("toast");
+
+    let count = 1;
+    let current = fortunes[0];
+    let lastIndex = 0;
+
+    function drawFortune() {
+      let index;
+      do {
+        index = Math.floor(Math.random() * fortunes.length);
+      } while (index === lastIndex && fortunes.length > 1);
+
+      lastIndex = index;
+      current = fortunes[index];
+      count++;
+
+      cardEl.classList.remove("fade");
+      void cardEl.offsetWidth;
+
+      sourceEl.textContent = current.source;
+      classicEl.textContent = current.classic;
+      originalEl.textContent = current.original;
+      readingEl.textContent = current.reading;
+      keywordsEl.innerHTML = current.keywords
+        .map(k => `<span class="tag">${k}</span>`)
+        .join("");
+
+      counterEl.textContent = `오늘의 제비 · ${String(count).padStart(3, "0")}`;
+      cardEl.classList.add("fade");
+    }
+
+    async function copyFortune() {
+      const text =
+`${current.source}
+“${current.classic}”
+${current.original}
+
+오늘의 풀이
+${current.reading}
+
+#${current.keywords.join(" #")}`;
+
+      try {
+        await navigator.clipboard.writeText(text);
+      } catch {
+        const area = document.createElement("textarea");
+        area.value = text;
+        document.body.appendChild(area);
+        area.select();
+        document.execCommand("copy");
+        area.remove();
+      }
+
+      toast.classList.add("show");
+      setTimeout(() => toast.classList.remove("show"), 1500);
+    }
+
+    document.getElementById("drawBtn").addEventListener("click", drawFortune);
+    document.getElementById("copyBtn").addEventListener("click", copyFortune);
+  </script>
+</body>
+</html>
